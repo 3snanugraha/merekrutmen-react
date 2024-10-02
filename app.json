@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "SIRUKA",
+    "slug": "siruka-rutan",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logokuda.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-first.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#52a8de"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.siruka.rutan"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logokuda.png",
+        "backgroundColor": "#52a8de"
+      },
+      "package": "com.siruka.rutan"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "33c4904b-f044-42e7-a187-d243a99cfde3"
+      }
+    }
+  }
+}
