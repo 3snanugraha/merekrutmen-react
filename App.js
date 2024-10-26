@@ -7,7 +7,8 @@ import Login from "./src/pages/Login";
 import Dashboard from "./src/pages/User/Dashboard";
 import Visitor from "./src/pages/User/Visit";
 import RegisterForm from "./src/pages/User/Register";
-import JobDetail from "./src/pages/User/JobDetail"; // Import halaman Job Detail
+import JobDetail from "./src/pages/User/JobDetail";
+import JobList from "./src/pages/User/JobList"; // Import halaman Job List
 
 const routerList = [
   {
@@ -31,8 +32,13 @@ const routerList = [
     headerShown: true,
   },
   {
-    name: "job-detail", // Tambahkan route baru untuk Job Detail
+    name: "job-detail",
     component: JobDetail,
+    headerShown: true,
+  },
+  {
+    name: "job-list", // Tambahkan route baru untuk Job List
+    component: JobList,
     headerShown: true,
   }
 ];
@@ -45,14 +51,15 @@ function App() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setSplashDone(true);
-    }, 3000); // Set timeout 3000ms (3 detik)
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
 
   if (!isSplashDone) {
-    return null; // Menampilkan splash screen yang sudah dikonfigurasi di app.json
+    return null; 
   }
+  
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -78,16 +85,17 @@ function App() {
 }
 
 function getHeaderTitle(route) {
-  // Ubah judul header sesuai dengan nama layar
   switch (route.name) {
     case "visit":
       return "Kunjungan";
     case "register":
       return "Registrasi";
     case "job-detail":
-      return "Detail Pekerjaan"; // Judul untuk halaman Job Detail
+      return "Detail Pekerjaan";
+    case "job-list":
+      return "Daftar Pekerjaan"; // Judul untuk halaman Job List
     default:
-      return route.name; // Gunakan nama layar jika tidak ada yang cocok
+      return route.name;
   }
 }
 

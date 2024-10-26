@@ -64,7 +64,7 @@ const Dashboard = ({ navigation }) => {
     const fetchJobList = async () => {
       try {
         const jobs = await AuthManager.pb.collection("job_list").getFullList({
-          sort: '-created',
+          sort: '+created', // Mengurutkan berdasarkan created_at dari yang terbaru
         });
         setJobData(jobs);
       } catch (error) {
@@ -75,6 +75,10 @@ const Dashboard = ({ navigation }) => {
     fetchImages();
     fetchJobList();
   }, []);
+
+  const handleNavigateToJobList = () => {
+    navigation.navigate("job-list", { searchTerm }); // Navigasi ke halaman Job List dengan searchTerm
+  };
 
   const handleLogout = () => {
     try {
@@ -121,7 +125,7 @@ const Dashboard = ({ navigation }) => {
           value={searchTerm}
           onChangeText={setSearchTerm}
         />
-        <TouchableOpacity style={styles.searchButton} onPress={() => console.log(searchTerm)}>
+        <TouchableOpacity style={styles.searchButton} onPress={handleNavigateToJobList}>
           <Text style={styles.searchButtonText}>Cari</Text>
         </TouchableOpacity>
       </View>
@@ -129,7 +133,7 @@ const Dashboard = ({ navigation }) => {
       <Text style={styles.latestJobsTitle}>3 Lowongan terbaru :</Text>
       <View style={styles.jobListContainer}>
         <FlatList
-          data={jobData.slice(0, 3)}
+          data={jobData.slice(0, 3)} // Menampilkan 3 lowongan terbaru
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity 
@@ -143,7 +147,7 @@ const Dashboard = ({ navigation }) => {
           style={styles.jobList}
           contentContainerStyle={styles.jobListContent}
         />
-        <TouchableOpacity style={styles.loadMoreButton}>
+        <TouchableOpacity style={styles.loadMoreButton} onPress={handleNavigateToJobList}>
           <Text style={styles.loadMoreButtonText}>Lebih banyak...</Text>
         </TouchableOpacity>
       </View>
