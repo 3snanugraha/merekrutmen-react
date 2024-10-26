@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "SIRUKA",
-    "slug": "siruka-rutan",
+    "name": "Merekrutmen",
+    "slug": "merekrutmen-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logokuda.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-first.png",
+      "image": "./assets/merekrutmen-banner.png",
       "resizeMode": "cover",
       "backgroundColor": "#52a8de"
     },
@@ -16,14 +16,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.siruka.rutan"
+      "bundleIdentifier": "com.merekrutmen.app"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logokuda.png",
+        "foregroundImage": "./assets/logome.png",
         "backgroundColor": "#52a8de"
       },
-      "package": "com.siruka.rutan"
+      "package": "com.merekrutmen.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

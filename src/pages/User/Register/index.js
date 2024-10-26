@@ -87,7 +87,7 @@ function RegisterForm({ navigation }) {
 
   return (
       <LinearGradient
-        colors={['#52a8de', '#4682d4', '#195DBA']}
+        colors={['#DF2935', '#DF2935', '#DF2935']}
         start={[0, 0]}
         end={[1, 1]}
         style={styles.gradient}
