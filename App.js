@@ -5,18 +5,9 @@ import { Provider } from "react-redux";
 import store from "./src/store/store";
 import Login from "./src/pages/Login";
 import Dashboard from "./src/pages/User/Dashboard";
-import Infomation from "./src/pages/User/Information";
-import Integration from "./src/pages/User/Integrasi";
-import Complaint from "./src/pages/User/Complaint";
 import Visitor from "./src/pages/User/Visit";
 import RegisterForm from "./src/pages/User/Register";
-import Pengumuman from "./src/pages/User/Information/Pengumuman";
-import Titipan from "./src/pages/User/Titipan";
-import Alur from "./src/pages/User/Information/Alur";
-import Kunjungan from "./src/pages/User/Information/Kunjungan";
-import Berhak from "./src/pages/User/Integrasi/Berhak";
-import Bebas from "./src/pages/User/Integrasi/Bebas";
-import UnduhSyarat from "./src/pages/User/Integrasi/UnduhSyarat";
+import JobDetail from "./src/pages/User/JobDetail"; // Import halaman Job Detail
 
 const routerList = [
   {
@@ -35,58 +26,13 @@ const routerList = [
     headerShown: true,
   },
   {
-    name: "information",
-    component: Infomation,
-    headerShown: true,
-  },
-  {
-    name: "integration",
-    component: Integration,
-    headerShown: true,
-  },
-  {
-    name: "complaint",
-    component: Complaint,
-    headerShown: true,
-  },
-  {
     name: "register",
     component: RegisterForm,
     headerShown: true,
   },
   {
-    name: "information-pengumuman",
-    component: Pengumuman,
-    headerShown: true,
-  },
-  {
-    name: "information-alur",
-    component: Alur,
-    headerShown: true,
-  },
-  {
-    name: "information-kunjungan",
-    component: Kunjungan,
-    headerShown: true,
-  },
-  {
-    name: "titipan",
-    component: Titipan,
-    headerShown: true,
-  },
-  {
-    name: "berhak",
-    component: Berhak,
-    headerShown: true,
-  },
-  {
-    name: "bebas",
-    component: Bebas,
-    headerShown: true,
-  },
-  {
-    name: "unduh-syarat",
-    component: UnduhSyarat,
+    name: "job-detail", // Tambahkan route baru untuk Job Detail
+    component: JobDetail,
     headerShown: true,
   }
 ];
@@ -122,7 +68,6 @@ function App() {
                   headerTitle: getHeaderTitle(route),
                   headerTitleAlign: "center"
                 })}
-                initialParams={{ isSuccess: false }}
               />
             );
           })}
@@ -137,28 +82,10 @@ function getHeaderTitle(route) {
   switch (route.name) {
     case "visit":
       return "Kunjungan";
-    case "information":
-      return "Informasi";
-    case "integration":
-      return "Integrasi";
-    case "complaint":
-      return "Keluhan";
     case "register":
       return "Registrasi";
-    case "information-pengumuman":
-      return "Pengumuman";
-      case "titipan":
-        return "Titipan Barang";
-    case "information-kunjungan":
-      return "Layanan Kunjungan";
-    case "information-alur":
-      return "Alur Integrasi WBP";
-    case "bebas":
-      return "Daftar WBP Bebas";
-    case "berhak":
-      return "Daftar WBP Berhak";
-    case "unduh-syarat":
-        return "Unduh Syarat PB/CB";
+    case "job-detail":
+      return "Detail Pekerjaan"; // Judul untuk halaman Job Detail
     default:
       return route.name; // Gunakan nama layar jika tidak ada yang cocok
   }

@@ -8,7 +8,6 @@ import {
   BackHandler,
   FlatList,
   Image,
-  Linking,
   StatusBar,
   TextInput,
 } from "react-native";
@@ -19,6 +18,7 @@ import AuthManager from "../../../services/AuthManager";
 
 const Dashboard = ({ navigation }) => {
   const [images, setImages] = useState([]);
+  const [jobData, setJobData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const userData = useSelector((state) => state.user.userData);
   const Name = userData.record.name;
@@ -42,21 +42,18 @@ const Dashboard = ({ navigation }) => {
 
   useEffect(() => {
     StatusBar.setBackgroundColor(colors.DOMINAN_COLOR);
+
     const fetchImages = async () => {
       try {
         await AuthManager.authenticate();
         const banners = await AuthManager.pb.collection("banner").getFullList({
           sort: 'created',
         });
-        const fetchedImages = [];
-        banners.forEach(item => {
+        const fetchedImages = banners.flatMap(item => {
           if (Array.isArray(item.gambar)) {
-            item.gambar.forEach(image => {
-              fetchedImages.push({ uri: `https://merekrutmen.pockethost.io/api/files/${item.collectionId}/${item.id}/${image}` });
-            });
-          } else {
-            fetchedImages.push({ uri: `https://merekrutmen.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.gambar}` });
+            return item.gambar.map(image => ({ uri: `https://merekrutmen.pockethost.io/api/files/${item.collectionId}/${item.id}/${image}` }));
           }
+          return { uri: `https://merekrutmen.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.gambar}` };
         });
         setImages(fetchedImages);
       } catch (error) {
@@ -64,7 +61,19 @@ const Dashboard = ({ navigation }) => {
       }
     };
 
+    const fetchJobList = async () => {
+      try {
+        const jobs = await AuthManager.pb.collection("job_list").getFullList({
+          sort: '-created',
+        });
+        setJobData(jobs);
+      } catch (error) {
+        console.error("Error fetching job list:", error);
+      }
+    };
+
     fetchImages();
+    fetchJobList();
   }, []);
 
   const handleLogout = () => {
@@ -77,12 +86,6 @@ const Dashboard = ({ navigation }) => {
       Alert.alert("Error", error.message);
     }
   };
-
-  const dummyJobData = [
-    { id: '1', title: 'Software Engineer', company: 'ABC Corp', location: 'Jakarta' },
-    { id: '2', title: 'Data Analyst', company: 'XYZ Inc', location: 'Bandung' },
-    { id: '3', title: 'Product Manager', company: 'Tech Co', location: 'Surabaya' },
-  ];
 
   return (
     <LinearGradient
@@ -123,25 +126,27 @@ const Dashboard = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.latestJobsTitle}>3 Lowongan terbaru:</Text>
-      <FlatList
-        data={dummyJobData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            style={styles.jobCard} 
-            onPress={() => Alert.alert("Lowongan Diklik", `Anda memilih lowongan: ${item.title}`)}
-          >
-            <Text style={styles.jobTitle}>{item.title}</Text>
-            <Text style={styles.jobDetails}>{item.company} | {item.location}</Text>
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }} // Menambahkan padding bawah untuk spacing
-      />
-
-      <TouchableOpacity style={styles.loadMoreButton}>
-        <Text style={styles.loadMoreButtonText}>Lebih banyak...</Text>
-      </TouchableOpacity>
+      <Text style={styles.latestJobsTitle}>3 Lowongan terbaru :</Text>
+      <View style={styles.jobListContainer}>
+        <FlatList
+          data={jobData.slice(0, 3)}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              style={styles.jobCard} 
+              onPress={() => navigation.navigate("job-detail", { job: item })}
+            >
+              <Text style={styles.jobTitle}>{item.title}</Text>
+              <Text style={styles.jobDetails}>{item.company} | {item.location}</Text>
+            </TouchableOpacity>
+          )}
+          style={styles.jobList}
+          contentContainerStyle={styles.jobListContent}
+        />
+        <TouchableOpacity style={styles.loadMoreButton}>
+          <Text style={styles.loadMoreButtonText}>Lebih banyak...</Text>
+        </TouchableOpacity>
+      </View>
     </LinearGradient>
   );
 };
@@ -158,7 +163,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
     width: "100%",
-    height: "22%",
+    height: "23%",
+    marginTop: -50,
     backgroundColor: colors.DOMINAN_COLOR,
   },
   keterangan: {
@@ -171,8 +177,6 @@ const styles = StyleSheet.create({
   heroImage: {
     resizeMode: "cover",
     width: 400,
-    marginTop: 15,
-    marginBottom: -20,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -184,14 +188,14 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     backgroundColor: 'white',
-    borderRadius: 50,
+    borderRadius: 10,
     paddingHorizontal: 10,
     height: 40,
   },
   searchButton: {
     backgroundColor: 'white',
-    borderRadius: 50,
-    padding: 8,
+    borderRadius: 10,
+    padding: 6,
     marginLeft: 5,
   },
   searchButtonText: {
@@ -203,31 +207,41 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 5,
   },
+  jobListContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+  },
+  jobList: {
+    width: '100%',
+  },
+  jobListContent: {
+    width: '100%',
+  },
   jobCard: {
     backgroundColor: 'white',
     padding: 15,
     borderRadius: 10,
-    marginVertical: 5, // Margin vertikal antar card
-    width: '100%', // Pastikan lebar 100%
-    alignItems: 'center', // Center align item dalam card
-    shadowColor: "#000", // Warna bayangan
-    shadowOffset: { width: 0, height: 2 }, // Offset bayangan
-    shadowOpacity: 0.25, // Opasitas bayangan
-    shadowRadius: 3.5, // Radius bayangan
-    elevation: 5, // Elevasi untuk Android
+    marginVertical: 5,
+    width: '100%',
+    alignItems: 'flex-start',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    elevation: 5,
   },
   jobTitle: {
-    fontSize: 15, // Ukuran font lebih kecil
+    fontSize: 15,
     fontWeight: 'bold',
     color: 'black',
   },
   jobDetails: {
-    fontSize: 12, // Ukuran font lebih kecil
+    fontSize: 12,
     color: 'gray',
   },
   loadMoreButton: {
     backgroundColor: 'white',
-    borderRadius: 50,
+    borderRadius: 10,
     padding: 8,
     alignItems: 'center',
     marginTop: 5,
