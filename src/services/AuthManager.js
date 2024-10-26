@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase';
 
-const pb = new PocketBase("https://rutan-app.pockethost.io");
+const pb = new PocketBase("https://merekrutmen.pockethost.io");
 
 const AuthManager = {
   isAuthenticated: false,
@@ -10,7 +10,7 @@ const AuthManager = {
 
   async authenticate() {
     try {
-      const authData = await this.pb.admins.authWithPassword("difariivman@gmail.com", "KataSandi987");
+      const authData = await this.pb.admins.authWithPassword("merekrutmen-admin@gmail.com", "KataSandi123");
       this.isAuthenticated = this.pb.authStore.isValid;
       this.token = this.pb.authStore.token;
       this.userId = this.pb.authStore.model.id;

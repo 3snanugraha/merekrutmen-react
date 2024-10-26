@@ -52,7 +52,7 @@ function Login({ navigation }) {
     const { email: identity, password } = form;
     try {
       await AuthManager.authenticate();
-      const response = await fetch('https://rutan-app.pockethost.io/api/collections/users/auth-with-password', {
+      const response = await fetch('https://merekrutmen.pockethost.io/api/collections/users/auth-with-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
