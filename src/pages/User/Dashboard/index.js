@@ -64,13 +64,28 @@ const Dashboard = ({ navigation }) => {
     const fetchJobList = async () => {
       try {
         const jobs = await AuthManager.pb.collection("job_list").getFullList({
-          sort: '+created', // Mengurutkan berdasarkan created_at dari yang terbaru
+          sort: '-created', // Menampilkan data terbaru terlebih dahulu
         });
-        setJobData(jobs);
+        
+        const mappedJobs = jobs.map(job => ({
+          id: job.id,
+          title: job.title,
+          company: job.company,
+          location: job.location,
+          description: job.description,
+          requirements: job.requirements,
+          salary: job.salary,
+          employment_type: job.employment_type,
+          job_level: job.job_level,
+          application_deadline: job.application_deadline,
+        }));
+        
+        setJobData(mappedJobs);
       } catch (error) {
         console.error("Error fetching job list:", error);
       }
     };
+    
 
     fetchImages();
     fetchJobList();
@@ -130,10 +145,10 @@ const Dashboard = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.latestJobsTitle}>3 Lowongan terbaru :</Text>
+      <Text style={styles.latestJobsTitle}>2 Lowongan terbaru :</Text>
       <View style={styles.jobListContainer}>
         <FlatList
-          data={jobData.slice(0, 3)} // Menampilkan 3 lowongan terbaru
+          data={jobData.slice(0, 2)} // Menampilkan 3 lowongan terbaru
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity 
@@ -142,6 +157,11 @@ const Dashboard = ({ navigation }) => {
             >
               <Text style={styles.jobTitle}>{item.title}</Text>
               <Text style={styles.jobDetails}>{item.company} | {item.location}</Text>
+              <Text style={styles.jobDetailText}>Tipe Pekerjaan: {item.employment_type || 'N/A'}</Text>
+              <Text style={styles.jobDetailText}>Tingkat Pekerjaan: {item.job_level || 'N/A'}</Text>
+              <Text style={styles.jobDetailText}>
+                Batas Akhir Lamaran: {item.application_deadline ? new Date(item.application_deadline).toLocaleDateString("id-ID") : 'N/A'}
+              </Text>
             </TouchableOpacity>
           )}
           style={styles.jobList}
@@ -151,6 +171,7 @@ const Dashboard = ({ navigation }) => {
           <Text style={styles.loadMoreButtonText}>Lebih banyak...</Text>
         </TouchableOpacity>
       </View>
+
     </LinearGradient>
   );
 };
@@ -168,7 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     width: "100%",
     height: "23%",
-    marginTop: -50,
+    marginTop: 0,
     backgroundColor: colors.DOMINAN_COLOR,
   },
   keterangan: {
@@ -243,6 +264,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'gray',
   },
+  jobDetailText: {
+    fontSize: 12,
+    color: 'gray',
+    marginTop: 2,
+  },  
   loadMoreButton: {
     backgroundColor: 'white',
     borderRadius: 10,

@@ -8,8 +8,14 @@ const JobDetail = ({ route }) => {
 
   // Fungsi untuk memformat gaji
   const formatCurrency = (amount) => {
-    if (!amount) return "Not disclosed";
+    if (!amount) return "Tidak disebutkan";
     return `IDR ${parseInt(amount).toLocaleString("id-ID")}`;
+  };
+
+  // Fungsi untuk memformat tanggal batas akhir lamaran
+  const formatDeadline = (date) => {
+    if (!date) return "Tidak disebutkan";
+    return new Date(date).toLocaleDateString("id-ID");
   };
 
   return (
@@ -23,14 +29,22 @@ const JobDetail = ({ route }) => {
         <View style={styles.card}>
           <Text style={styles.title}>{job.title}</Text>
           <Text style={styles.company}>{job.company}</Text>
-          <Text style={styles.location}>Location: {job.location}</Text>
-          <Text style={styles.description}>Description:</Text>
-          <Text style={styles.descriptionText}>{job.description || "No description available"}</Text>
-          <Text style={styles.requirements}>Requirements:</Text>
-          <Text style={styles.requirementsText}>{job.requirements || "No specific requirements"}</Text>
-          <Text style={styles.salary}>Salary: {formatCurrency(job.salary)}</Text>
+          <Text style={styles.location}>Lokasi: {job.location || "Tidak disebutkan"}</Text>
+
+          <Text style={styles.sectionTitle}>Deskripsi Pekerjaan:</Text>
+          <Text style={styles.sectionText}>{job.description || "Tidak ada deskripsi tersedia"}</Text>
+
+          <Text style={styles.sectionTitle}>Persyaratan:</Text>
+          <Text style={styles.sectionText}>{job.requirements || "Tidak ada persyaratan khusus"}</Text>
+
+          <Text style={styles.salary}>Gaji: {formatCurrency(job.salary)}</Text>
+          <Text style={styles.employmentType}>Jenis Pekerjaan: {job.employment_type || "Tidak disebutkan"}</Text>
+          <Text style={styles.jobLevel}>Tingkat Pekerjaan: {job.job_level || "Tidak disebutkan"}</Text>
+          <Text style={styles.applicationDeadline}>
+            Batas Akhir Lamaran: {formatDeadline(job.application_deadline)}
+          </Text>
         </View>
-        
+
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Apply Now</Text>
         </TouchableOpacity>
@@ -56,67 +70,71 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 5, // Efek shadow untuk Android
+    elevation: 5,
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20, // sebelumnya 24
     fontWeight: "bold",
     color: colors.DARK_TEXT,
     marginBottom: 10,
   },
   company: {
-    fontSize: 18,
+    fontSize: 14, // sebelumnya 18
     color: colors.DARK_GRAY,
     marginBottom: 5,
   },
   location: {
-    fontSize: 16,
+    fontSize: 12, // sebelumnya 16
     color: colors.DARK_TEXT,
     marginBottom: 15,
   },
-  description: {
-    fontSize: 18,
+  sectionTitle: {
+    fontSize: 14, // sebelumnya 18
     fontWeight: "bold",
     color: colors.DARK_TEXT,
     marginTop: 15,
     marginBottom: 5,
   },
-  descriptionText: {
-    fontSize: 16,
-    color: colors.DARK_GRAY,
-    marginBottom: 15,
-  },
-  requirements: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.DARK_TEXT,
-    marginTop: 15,
-    marginBottom: 5,
-  },
-  requirementsText: {
-    fontSize: 16,
+  sectionText: {
+    fontSize: 12, // sebelumnya 16
     color: colors.DARK_GRAY,
     marginBottom: 15,
   },
   salary: {
-    fontSize: 16,
+    fontSize: 12, // sebelumnya 16
     color: colors.DARK_GRAY,
     fontWeight: "bold",
     marginBottom: 10,
   },
+  employmentType: {
+    fontSize: 12, // sebelumnya 16
+    color: colors.DARK_TEXT,
+    marginBottom: 5,
+  },
+  jobLevel: {
+    fontSize: 12, // sebelumnya 16
+    color: colors.DARK_TEXT,
+    marginBottom: 5,
+  },
+  applicationDeadline: {
+    fontSize: 12, // sebelumnya 16
+    color: colors.DARK_TEXT,
+    marginBottom: 15,
+  },
   button: {
     backgroundColor: "white",
     borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 25,
     alignItems: "center",
   },
   buttonText: {
     color: colors.DOMINAN_COLOR,
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 14, // sebelumnya 16
   },
 });
+
 
 export default JobDetail;

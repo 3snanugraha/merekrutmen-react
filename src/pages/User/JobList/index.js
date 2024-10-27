@@ -11,9 +11,9 @@ const JobList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [filterVisible, setFilterVisible] = useState(false);
-  const [salaryFilterActive, setSalaryFilterActive] = useState(false); // Status filter gaji
-  const [salaryFilterDirection, setSalaryFilterDirection] = useState('descending'); // Arah filter gaji
-  const [dateFilterDirection, setDateFilterDirection] = useState('descending'); // Arah filter tanggal
+  const [salaryFilterActive, setSalaryFilterActive] = useState(false);
+  const [salaryFilterDirection, setSalaryFilterDirection] = useState('descending');
+  const [dateFilterDirection, setDateFilterDirection] = useState('descending');
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -27,7 +27,7 @@ const JobList = () => {
           sort: '-created',
         });
         setJobData(jobs);
-        setFilteredData(jobs); // Set initial filtered data
+        setFilteredData(jobs);
       } catch (error) {
         console.error("Error fetching job list:", error);
       }
@@ -42,35 +42,26 @@ const JobList = () => {
   };
 
   const handleFilterByDate = () => {
-    if (dateFilterDirection === 'descending') {
-      const sortedByDate = [...filteredData].sort((a, b) => new Date(b.created) - new Date(a.created));
-      setFilteredData(sortedByDate);
-    } else {
-      const sortedByDate = [...filteredData].sort((a, b) => new Date(a.created) - new Date(b.created));
-      setFilteredData(sortedByDate);
-    }
-    setSalaryFilterActive(false); // Reset status filter gaji
-    setSalaryFilterDirection('descending'); // Reset arah filter gaji
-    setDateFilterDirection(dateFilterDirection === 'descending' ? 'ascending' : 'descending'); // Toggle arah filter tanggal
-    setFilterVisible(false); // Sembunyikan filter setelah memilih
+    const sortedByDate = [...filteredData].sort((a, b) => dateFilterDirection === 'descending'
+      ? new Date(b.application_deadline) - new Date(a.application_deadline)
+      : new Date(a.application_deadline) - new Date(b.application_deadline));
+      
+    setFilteredData(sortedByDate);
+    setDateFilterDirection(dateFilterDirection === 'descending' ? 'ascending' : 'descending');
+    setSalaryFilterActive(false);
+    setSalaryFilterDirection('descending');
+    setFilterVisible(false);
   };
 
   const handleFilterBySalary = () => {
-    if (salaryFilterActive) {
-      // Jika filter gaji sudah aktif, reset ke data awal
-      setFilteredData(jobData);
-      setSalaryFilterDirection('descending'); // Reset arah filter gaji
-    } else {
-      const sortedBySalary = [...filteredData].sort((a, b) => {
-        return salaryFilterDirection === 'descending' 
-          ? (b.salary || 0) - (a.salary || 0) 
-          : (a.salary || 0) - (b.salary || 0);
-      });
-      setFilteredData(sortedBySalary);
-    }
-    setSalaryFilterActive(!salaryFilterActive); // Toggle status filter gaji
-    setSalaryFilterDirection(salaryFilterDirection === 'descending' ? 'ascending' : 'descending'); // Toggle arah filter gaji
-    setFilterVisible(false); // Sembunyikan filter setelah memilih
+    const sortedBySalary = [...filteredData].sort((a, b) => salaryFilterDirection === 'descending'
+      ? (b.salary || 0) - (a.salary || 0)
+      : (a.salary || 0) - (b.salary || 0));
+    
+    setFilteredData(sortedBySalary);
+    setSalaryFilterActive(!salaryFilterActive);
+    setSalaryFilterDirection(salaryFilterDirection === 'descending' ? 'ascending' : 'descending');
+    setFilterVisible(false);
   };
 
   return (
@@ -137,8 +128,11 @@ const JobList = () => {
             >
               <Text style={styles.title}>{item.title}</Text>
               <Text style={styles.company}>{item.company}</Text>
-              <Text style={styles.location}>Location: {item.location}</Text>
-              <Text style={styles.salary}>Salary: {item.salary ? `IDR ${parseInt(item.salary).toLocaleString("id-ID")}` : "Not disclosed"}</Text>
+              <Text style={styles.location}>Lokasi: {item.location}</Text>
+              <Text style={styles.employmentType}>Jenis Pekerjaan: {item.employment_type}</Text>
+              <Text style={styles.jobLevel}>Tingkat Pekerjaan: {item.job_level}</Text>
+              <Text style={styles.applicationDeadline}>Batas Pengajuan: {new Date(item.application_deadline).toLocaleDateString("id-ID")}</Text>
+              <Text style={styles.salary}>Gaji: {item.salary ? `IDR ${parseInt(item.salary).toLocaleString("id-ID")}` : "Tidak diketahui"}</Text>
             </TouchableOpacity>
           )}
           style={styles.jobList}
@@ -156,12 +150,13 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
+    paddingTop: 60, // Menambahkan paddingTop agar tidak tertutup header
   },
   searchContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 10, // Menambah marginBottom untuk jarak yang lebih baik
     width: '90%',
     alignSelf: 'center',
   },
@@ -190,7 +185,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   filterButton: {
-    alignItems: 'flex-end',
+    alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: colors.DOMINAN_COLOR,
     padding: 8,
@@ -264,13 +259,31 @@ const styles = StyleSheet.create({
   salary: {
     fontSize: 12,
     color: colors.DARK_GRAY,
+    marginBottom: 5,
+    marginTop: 5,
+    fontWeight: 'bold',
+  },
+  employmentType: {
+    fontSize: 12,
+    color: colors.DARK_GRAY,
+    marginBottom: 5,
+  },
+  jobLevel: {
+    fontSize: 12,
+    color: colors.DARK_GRAY,
+    marginBottom: 5,
+  },
+  applicationDeadline: {
+    fontSize: 12,
+    color: colors.DARK_GRAY,
   },
   jobList: {
-    width: "100%",
+    marginTop: 10,
   },
   jobListContent: {
-    paddingBottom: 20,
+    paddingBottom: 20, // Menambahkan paddingBottom agar list tidak mepet di bagian bawah
   },
 });
+
 
 export default JobList;

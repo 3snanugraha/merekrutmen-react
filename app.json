@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/merekrutmen-banner.png",
       "resizeMode": "cover",
-      "backgroundColor": "#52a8de"
+      "backgroundColor": "#DF2935"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -26,7 +26,7 @@
       "package": "com.merekrutmen.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logome.png"
     },
     "extra": {
       "eas": {
